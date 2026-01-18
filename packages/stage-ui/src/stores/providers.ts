@@ -326,8 +326,8 @@ export const useProvidersStore = defineStore('providers', () => {
     'siliconflow': buildOpenAICompatibleProvider({
       id: 'siliconflow',
       name: 'SiliconFlow',
-      nameKey: 'siliconflow',
-      descriptionKey: 'siliconflow',
+      nameKey: 'settings.pages.providers.provider.siliconflow.title',
+      descriptionKey: 'settings.pages.providers.provider.siliconflow.description',
       icon: 'i-lobe-icons:siliconcloud',
       description: 'siliconflow.cn',
       defaultBaseUrl: 'https://api.siliconflow.cn/v1/',
@@ -871,8 +871,8 @@ export const useProvidersStore = defineStore('providers', () => {
     'siliconflow-speech': buildOpenAICompatibleProvider({
       id: 'siliconflow-speech',
       name: 'SiliconFlow',
-      nameKey: 'siliconflow-speech',
-      descriptionKey: 'siliconflow-speech',
+      nameKey: 'settings.pages.providers.provider.siliconflow-speech.title',
+      descriptionKey: 'settings.pages.providers.provider.siliconflow-speech.description',
       icon: 'i-lobe-icons:siliconcloud',
       description: 'siliconflow.cn',
       category: 'speech',
