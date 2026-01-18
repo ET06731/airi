@@ -143,6 +143,9 @@ pages:
         systemprompt: 'Error: Please, provide a system prompt.'
         posthistoryinstructions: 'Error: Post history prompt is required.'
     modules: Modules
+    modules_edit: Edit
+    modules_save: Save
+    modules_cancel: Cancel
     name_asc: Name (A-Z)
     name_desc: Name (Z-A)
     no_cards: No cards yet. Click the button above to upload one!
@@ -700,6 +703,12 @@ pages:
               description: App ID of the project where you can obtain in Console
               label: App ID
         title: Volcano Engine
+      siliconflow:
+        description: siliconflow.cn
+        title: SiliconFlow
+      siliconflow-speech:
+        description: siliconflow.cn
+        title: SiliconFlow
       xai:
         description: x.ai
         title: xAI

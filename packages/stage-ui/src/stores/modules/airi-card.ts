@@ -242,6 +242,36 @@ export const useAiriCardStore = defineStore('airi-card', () => {
     resetState,
     initialize,
 
+    updateCardModules: (id: string, modules: Partial<AiriExtension['modules']>) => {
+      const existingCard = cards.value.get(id)
+      if (!existingCard)
+        return false
+
+      const updatedCard: AiriCard = {
+        ...existingCard,
+        extensions: {
+          ...existingCard.extensions,
+          airi: {
+            ...existingCard.extensions.airi,
+            modules: {
+              ...existingCard.extensions.airi.modules,
+              consciousness: {
+                ...existingCard.extensions.airi.modules.consciousness,
+                ...modules.consciousness,
+              },
+              speech: {
+                ...existingCard.extensions.airi.modules.speech,
+                ...modules.speech,
+              },
+            },
+          },
+        },
+      }
+
+      cards.value.set(id, updatedCard)
+      return true
+    },
+
     currentModels: computed(() => {
       return {
         consciousness: {

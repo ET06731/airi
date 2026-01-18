@@ -13,7 +13,7 @@ import {
   DialogRoot,
   DialogTitle,
 } from 'reka-ui'
-import { computed, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import DeleteCardDialog from './DeleteCardDialog.vue'
@@ -30,7 +30,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const cardStore = useAiriCardStore()
-const { removeCard } = cardStore
+const { removeCard, updateCardModules } = cardStore
 const { activeCardId } = storeToRefs(cardStore)
 
 // Get selected card data
@@ -55,6 +55,52 @@ const moduleSettings = computed(() => {
     consciousness: airiExt.consciousness?.model || '',
     speech: airiExt.speech?.model || '',
     voice: airiExt.speech?.voice_id || '',
+  }
+})
+
+// Module editing state
+const isEditingModules = ref(false)
+const editForm = reactive({
+  consciousness: '',
+  speech: '',
+  voice: '',
+})
+
+// Start editing modules
+function startEditingModules() {
+  editForm.consciousness = moduleSettings.value.consciousness
+  editForm.speech = moduleSettings.value.speech
+  editForm.voice = moduleSettings.value.voice
+  isEditingModules.value = true
+}
+
+// Cancel editing modules
+function cancelEditingModules() {
+  isEditingModules.value = false
+}
+
+// Save module changes
+function saveModules() {
+  if (!props.cardId)
+    return
+
+  updateCardModules(props.cardId, {
+    consciousness: {
+      model: editForm.consciousness,
+    },
+    speech: {
+      model: editForm.speech,
+      voice_id: editForm.voice,
+    },
+  })
+
+  isEditingModules.value = false
+}
+
+// Reset editing state when dialog closes or card changes
+watch(() => props.modelValue, (isOpen) => {
+  if (!isOpen) {
+    isEditingModules.value = false
   }
 })
 
@@ -275,7 +321,19 @@ const activeTab = computed({
 
             <!-- Modules -->
             <div v-if="activeTab === 'modules'">
+              <!-- Edit button -->
+              <div v-if="!isEditingModules" class="mb-4 flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  icon="i-solar:pen-2-linear"
+                  :label="t('settings.pages.card.modules_edit')"
+                  @click="startEditingModules"
+                />
+              </div>
+
               <div grid="~ cols-1 sm:cols-3" gap-4>
+                <!-- Consciousness Model -->
                 <div
                   flex="~ col"
                   bg="white/60 dark:black/30"
@@ -288,11 +346,22 @@ const activeTab = computed({
                     <div i-lucide:ghost />
                     {{ t('settings.pages.card.consciousness.model') }}
                   </span>
-                  <div truncate font-medium>
-                    {{ moduleSettings.consciousness ?? 'default' }}
-                  </div>
+                  <template v-if="isEditingModules">
+                    <input
+                      v-model="editForm.consciousness"
+                      type="text"
+                      class="w-full border border-neutral-300 rounded-md bg-white px-2 py-1 text-sm outline-none dark:border-neutral-600 focus:border-primary-500 dark:bg-neutral-800 dark:focus:border-primary-400"
+                      :placeholder="moduleSettings.consciousness || 'Enter model name...'"
+                    >
+                  </template>
+                  <template v-else>
+                    <div truncate font-medium>
+                      {{ moduleSettings.consciousness || 'default' }}
+                    </div>
+                  </template>
                 </div>
 
+                <!-- Speech Model -->
                 <div
                   flex="~ col"
                   bg="white/60 dark:black/30"
@@ -305,11 +374,22 @@ const activeTab = computed({
                     <div i-lucide:mic />
                     {{ t('settings.pages.card.speech.model') }}
                   </span>
-                  <div truncate font-medium>
-                    {{ moduleSettings.speech ?? 'default' }}
-                  </div>
+                  <template v-if="isEditingModules">
+                    <input
+                      v-model="editForm.speech"
+                      type="text"
+                      class="w-full border border-neutral-300 rounded-md bg-white px-2 py-1 text-sm outline-none dark:border-neutral-600 focus:border-primary-500 dark:bg-neutral-800 dark:focus:border-primary-400"
+                      :placeholder="moduleSettings.speech || 'Enter model name...'"
+                    >
+                  </template>
+                  <template v-else>
+                    <div truncate font-medium>
+                      {{ moduleSettings.speech || 'default' }}
+                    </div>
+                  </template>
                 </div>
 
+                <!-- Voice -->
                 <div
                   flex="~ col"
                   bg="white/60 dark:black/30"
@@ -322,10 +402,35 @@ const activeTab = computed({
                     <div i-lucide:music />
                     {{ t('settings.pages.card.speech.voice') }}
                   </span>
-                  <div truncate font-medium>
-                    {{ moduleSettings.voice ?? 'default' }}
-                  </div>
+                  <template v-if="isEditingModules">
+                    <input
+                      v-model="editForm.voice"
+                      type="text"
+                      class="w-full border border-neutral-300 rounded-md bg-white px-2 py-1 text-sm outline-none dark:border-neutral-600 focus:border-primary-500 dark:bg-neutral-800 dark:focus:border-primary-400"
+                      :placeholder="moduleSettings.voice || 'Enter voice ID...'"
+                    >
+                  </template>
+                  <template v-else>
+                    <div truncate font-medium>
+                      {{ moduleSettings.voice || 'default' }}
+                    </div>
+                  </template>
                 </div>
+              </div>
+
+              <!-- Save/Cancel buttons -->
+              <div v-if="isEditingModules" class="mt-4 flex justify-end gap-2">
+                <Button
+                  variant="ghost"
+                  :label="t('settings.pages.card.modules_cancel')"
+                  @click="cancelEditingModules"
+                />
+                <Button
+                  variant="primary"
+                  icon="i-solar:check-circle-linear"
+                  :label="t('settings.pages.card.modules_save')"
+                  @click="saveModules"
+                />
               </div>
             </div>
           </div>

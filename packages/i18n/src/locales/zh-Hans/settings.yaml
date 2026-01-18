@@ -136,6 +136,9 @@ pages:
         systemprompt: '错误：请提供系统提示。'
         posthistoryinstructions: '错误：必须提供消息历史后的提示。'
     modules: 模块
+    modules_edit: 编辑
+    modules_save: 保存
+    modules_cancel: 取消
     name_asc: 名称 (A-Z)
     name_desc: 名称 (Z-A)
     no_cards: 还没有任何角色卡，点击上方按钮上传一个吧！
@@ -674,6 +677,12 @@ pages:
               description: 可在控制台获取的 App ID
               label: App ID
         title: 火山引擎
+      siliconflow:
+        description: siliconflow.cn
+        title: 硅基流动
+      siliconflow-speech:
+        description: siliconflow.cn
+        title: 硅基流动
       xai:
         description: X.AI
         title: xAI
